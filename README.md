@@ -1,3 +1,3 @@
-### Starter kit for Lipa na Mpesa online tutorial.
+### Lipa na Mpesa online tutorial.
 
-Clone the repository to get started.
+Implementing lipa na mpesa online using Node.js

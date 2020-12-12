@@ -34,11 +34,7 @@ class MpesaController {
             
             next();
         })
-    }
-
-    getTimestamp(){
-        return "wow!!"
-    }
+    };
 
     lipaNaMpesaOnline(req,res){
         let token = req.token;
@@ -53,13 +49,13 @@ class MpesaController {
 
         let password = new Buffer.from(`${bs_short_code}${passkey}${timestamp}`).toString('base64');
         let transcation_type = "CustomerPayBillOnline";
-        let amount = "1";
-        let partyA = "254723546223";
+        let amount = "1"; //you can enter any amount
+        let partyA = "your_phone_number"; //should follow the format:2547xxxxxxxx
         let partyB = process.env.lipa_na_mpesa_shortcode;
-        let phoneNumber = "254723546223";
-        let callBackUrl = "http://17e2c2f08166.ngrok.io/mpesa/lipa-na-mpesa-callback";
-        let accountReference = "123test";
-        let transaction_desc = "Giving a tutorial on using lipa na mpesa online";
+        let phoneNumber = "your_phone_number"; //should follow the format:2547xxxxxxxx
+        let callBackUrl = "{{your_ngrok_url}}/mpesa/lipa-na-mpesa-callback";
+        let accountReference = "lipa-na-mpesa-tutorial";
+        let transaction_desc = "Tutorial on using lipa na mpesa online";
 
         request({
             method:'POST',
