@@ -1,0 +1,21 @@
+{
+  "name": "starket-kit-lipa-na-mpesa-online",
+  "version": "1.0.0",
+  "description": "starter kit for lipa na mpesa online",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start":"node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "starter-kit-lipa-na-mpesa-online"
+  },
+  "author": "mwangikibui",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6",
+    "request": "^2.88.2"
+  }
+}
