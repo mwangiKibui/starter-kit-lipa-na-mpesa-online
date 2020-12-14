@@ -21,10 +21,12 @@ class MpesaController {
             }
         },(error,response,body) => {
 
-            if(error) return res.send({
-                success:false,
-                message:"Error getting oauth token"
-            });
+            if(error) {
+                return res.send({
+                    success:false,
+                    message:"Error getting oauth token"
+                });
+            };
 
             //else we extract the token from the body
 
@@ -32,18 +34,19 @@ class MpesaController {
 
             req.token = token;
             
-            next();
-        })
+            return next();
+        });
     };
 
     lipaNaMpesaOnline(req,res){
         let token = req.token;
         let auth = `Bearer ${token}`;
-        let url = process.env.lipa_na_mpesa_url;
+        
 
         //getting the timestamp
         let timestamp = require('../middleware/timestamp').timestamp;
-        
+
+        let url = process.env.lipa_na_mpesa_url;
         let bs_short_code = process.env.lipa_na_mpesa_shortcode;
         let passkey = process.env.lipa_na_mpesa_passkey;
 
@@ -55,7 +58,7 @@ class MpesaController {
         let phoneNumber = "your_phone_number"; //should follow the format:2547xxxxxxxx
         let callBackUrl = "{{your_ngrok_url}}/mpesa/lipa-na-mpesa-callback";
         let accountReference = "lipa-na-mpesa-tutorial";
-        let transaction_desc = "Tutorial on using lipa na mpesa online";
+        let transaction_desc = "Testing lipa na mpesa functionality";
 
         request({
             method:'POST',
@@ -80,7 +83,7 @@ class MpesaController {
 
             if(error) return res.send({
                 success:false,
-                message:"Error processing your request"
+                message:error
             });
 
             //else true
@@ -97,11 +100,14 @@ class MpesaController {
         
         let message = req.Body.stkCallback.ResultDesc;
 
+        //based on the message you can update some records.
+
         return res.send({
             success:true,
             message
-        })
-    }
+        });
+        
+    };
 
 };
 
