@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "ngrok":"ngrok http 5000"
+    "ngrok": "ngrok http 5000"
   },
   "repository": {
     "type": "git",
@@ -15,10 +15,10 @@
   "author": "mwangikibui",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ngrok": "^3.3.0",
-    "nodemon": "^2.0.6",
-    "request": "^2.88.2"
+    "nodemon": "^2.0.6"
   }
 }

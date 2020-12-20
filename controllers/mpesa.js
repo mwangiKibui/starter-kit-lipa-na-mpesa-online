@@ -1,9 +1,10 @@
-const request = require('request');
+
+const axios = require('axios').default;
 require('dotenv').config();
 
 class MpesaController {
 
-    getOAuthToken(req,res,next){
+    async getOAuthToken(req,res,next){
         let consumer_key = process.env.consumer_key;
         let consumer_secret = process.env.consumer_secret;
 
@@ -14,31 +15,34 @@ class MpesaController {
 
         let auth = `Basic ${buffer.toString('base64')}`;
 
-        request({
-            url:url,
-            headers:{
-                "Authorization":auth
-            }
-        },(error,response,body) => {
+        try{
 
-            if(error) {
-                return res.send({
-                    success:false,
-                    message:"Error getting oauth token"
-                });
-            };
+            let {data} = await axios.get(url,{
+                "headers":{
+                    "Authorization":auth
+                }
+            });
 
-            //else we extract the token from the body
+            req.token = data['access_token'];
 
-            let token = JSON.parse(body)['access_token'];
-
-            req.token = token;
-            
             return next();
-        });
+
+        }catch(err){
+
+            return res.send({
+                success:false,
+                message:err['response']['statusText']
+            });
+
+        }
+        
+        
+
+        
+        
     };
 
-    lipaNaMpesaOnline(req,res){
+    async lipaNaMpesaOnline(req,res){
         let token = req.token;
         let auth = `Bearer ${token}`;
         
@@ -53,20 +57,16 @@ class MpesaController {
         let password = new Buffer.from(`${bs_short_code}${passkey}${timestamp}`).toString('base64');
         let transcation_type = "CustomerPayBillOnline";
         let amount = "1"; //you can enter any amount
-        let partyA = "your_phone_number"; //should follow the format:2547xxxxxxxx
+        let partyA = "party-sending-funds"; //should follow the format:2547xxxxxxxx
         let partyB = process.env.lipa_na_mpesa_shortcode;
-        let phoneNumber = "your_phone_number"; //should follow the format:2547xxxxxxxx
-        let callBackUrl = "{{your_ngrok_url}}/mpesa/lipa-na-mpesa-callback";
+        let phoneNumber = "party-sending-funds"; //should follow the format:2547xxxxxxxx
+        let callBackUrl = "your-ngrok-url/mpesa/lipa-na-mpesa-callback";
         let accountReference = "lipa-na-mpesa-tutorial";
         let transaction_desc = "Testing lipa na mpesa functionality";
 
-        request({
-            method:'POST',
-            url,
-            headers:{
-                'Authorization':auth
-            },
-            json:{
+        try {
+
+            let {data} = await axios.post(url,{
                 "BusinessShortCode":bs_short_code,
                 "Password":password,
                 "Timestamp":timestamp,
@@ -78,29 +78,31 @@ class MpesaController {
                 "CallBackURL":callBackUrl,
                 "AccountReference":accountReference,
                 "TransactionDesc":transaction_desc
-            }
-        },(error,response,body) => {
-
-            if(error) return res.send({
-                success:false,
-                message:error
-            });
-
-            //else true
-
+            },{
+                "headers":{
+                    "Authorization":auth
+                }
+            }).catch(console.log);
 
             return res.send({
                 success:true,
-                message:body
-            })
-        })
+                message:data
+            });
+
+        }catch(err){
+
+            return res.send({
+                success:false,
+                message:err['response']['statusText']
+            });
+
+        };
     };
 
     lipaNaMpesaOnlineCallback(req,res){
-        
-        let message = req.Body.stkCallback.ResultDesc;
 
-        //based on the message you can update some records.
+        //Get the transaction description
+        let message = req.body.Body.stkCallback['ResultDesc'];
 
         return res.send({
             success:true,
