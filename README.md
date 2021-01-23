@@ -24,3 +24,7 @@ npm run dev
 ```bash
 npm run ngrok
 ```
+If ngrok setup doesn't work, use https://beeceptor.com/ to handle the Mpesa webhook.
+On the beeceptor website input form, type a unique name that will automatically be prepended to beeceptor.com, 
+which would act as your callback url. Whenever you receive data payload on your new beeceptor callback url, the 
+beeceptor page will automatically update with the request body payload from a successful transaction. 
